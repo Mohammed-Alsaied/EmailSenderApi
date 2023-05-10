@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Common.ViewModels;
 using FluentValidation;
 using FluentValidation.Results;
@@ -28,27 +28,27 @@ namespace Common
         public virtual async Task<IEnumerable<TViewModel>> Get()
         {
             List<TEntity> entities = await _unitOfWork.ReadAsync();
-            return entities.Select(product => _mapper.Map<TViewModel>(product));
+            return entities.Select(entity => _mapper.Map<TViewModel>(entity));
         }
 
         [HttpGet("{id}")]
         public virtual async Task<IActionResult> Get(Guid id)
         {
-            TEntity product = await _unitOfWork.ReadByIdAsync(id);
-            TViewModel productViewModel = _mapper.Map<TViewModel>(product);
-            return Ok(productViewModel);
+            TEntity entity = await _unitOfWork.ReadByIdAsync(id);
+            TViewModel entityViewModel = _mapper.Map<TViewModel>(entity);
+            return Ok(entityViewModel);
         }
 
         [HttpPost]
-        public virtual async Task<IActionResult> Post([FromForm] TViewModel productViewModel)
+        public virtual async Task<IActionResult> Post([FromForm] TViewModel entityViewModel)
         {
-            ValidationResult validationResult = await _validator.ValidateAsync(productViewModel);
+            ValidationResult validationResult = await _validator.ValidateAsync(entityViewModel);
             if (!validationResult.IsValid)
                 return BadRequest(new { errors = validationResult.Errors });
 
-            var product = _mapper.Map<TEntity>(productViewModel);
-            product = await _unitOfWork.CreateAsync(product);
-            return Ok(_mapper.Map<TViewModel>(product));
+            var entity = _mapper.Map<TEntity>(entityViewModel);
+            entity = await _unitOfWork.CreateAsync(entity);
+            return Ok(_mapper.Map<TViewModel>(entity));
         }
 
         [HttpDelete("{id}")]
