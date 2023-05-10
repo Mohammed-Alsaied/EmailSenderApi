@@ -54,8 +54,8 @@ public class MessagesController : BaseController<Message, MessageViewModel>
     }
 
     [Authorize(Roles = "Admin")]
-    public override Task<IActionResult> Post([FromForm] MessageViewModel productViewModel)
+    public override Task<IActionResult> Post([FromForm] MessageViewModel entityViewModel)
     {
-        return base.Post(productViewModel);
+        return base.Post(entityViewModel);
     }
 }
